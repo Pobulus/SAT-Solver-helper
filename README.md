@@ -9,7 +9,9 @@ Po skompilowaniu, wywołać plik wykonywalny, podać liczbę obiektów(wierszy) 
 3. klauzule do biklastrów na tle 0
 4. klauzule do biklastów z wybrem tła
 ```
-wartości w tablicy muszą być liczbami całkowitymi,
-nazwy kolumn mogą być ciągiem znaków bez spacji, 
-nazwy kolumn nie mogą być liczbą która koduje numer wiersza 
+Klauzule wypisane są w formacie użwanym przez DPLL SAT Solver: https://www.inf.ufpr.br/dpasqualin/d3-dpll/
+
+- wartości w tablicy muszą być liczbami całkowitymi,
+- nazwy kolumn mogą być ciągiem znaków bez spacji, 
+- nazwy kolumn nie mogą być liczbą która koduje numer wiersza 
 
