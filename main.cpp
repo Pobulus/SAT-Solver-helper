@@ -208,11 +208,14 @@ int main(){
 		}
 		cout <<endl;
 	}
-	cout << "Co mam zrobić?\n1. macierz odróżnialności\n2. macierz odróżnialności modulo\n3. klauzule do biklastrów"<<endl;
-	int decision;
-	cin >> decision;
-	switch(decision){
-		case 1:
+	char decision;
+	bool  loop = true;
+	while(loop){
+		cout << "\nCo mam zrobić?\n1. macierz odróżnialności\n2. macierz odróżnialności modulo\n3. klauzule do biklastrów na tle 0\n4. klauzule do biklastów z wybrem tła\nq.  wyjście"<<endl;
+
+		cin >> decision;
+		switch(decision){
+		case '1':
 		{
 			vector<vector<string>> matrix=get_matrix(table, attr_names);
 			print_matrix(matrix, table);
@@ -222,7 +225,7 @@ int main(){
 			print_clauses(clauses);
 		}
 			break;
-		case 2:
+		case '2':
 		{
 			string dec;
 			cout << "Który atrybut jest decyzją? [ ";
@@ -240,19 +243,35 @@ int main(){
 			print_clauses(clauses);
 		}
 			break;
-		case 3:
+		case '3':
 		{
-			if(objects!=attributes)cout << "WARN: Różna liczba kolumn i wierszy, macierz nie kwadratowa\nPrawdopodobnie robisz coś źle!"<<endl;
+			if(objects!=attributes)cout << "WARN: Różna liczba kolumn i wierszy - macierz nie kwadratowa\nMożliwe, że robisz coś źle!"<<endl;
 			set<string> clauses;
 			get_clauses_biclaster(table, attr_names, clauses);
 			print_function(clauses);
 			print_clauses(clauses);
 		}break;
+		case '4':
+		{
+			if(objects!=attributes)cout << "WARN: Różna liczba kolumn i wierszy - macierz nie kwadratowa\nMożliwe, że robisz coś źle!"<<endl;
+			set<string> clauses;
+			int search_for;
+			cout << "Na tle czego mam szukać? ";
+			cin >> search_for;
+			
+			get_clauses_biclaster(table, attr_names, clauses, search_for);
+			print_function(clauses);
+			print_clauses(clauses);
+		}break;
+		case 'q':
+			loop = false;
+			break;	
+		
 		default:
 			cout << "zły wybór."<<endl;
 			break;
 	}
-
+	}
 
 
 
