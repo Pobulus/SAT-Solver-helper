@@ -56,6 +56,64 @@ void get_clauses(vector<vector<string>> &matrix, set<string>&clauses){
 		}
 	}
 }
+bool print_biclaster(map<string, vector<int>> &table,vector<string> &attr_names, string biclaster=""){
+	int hits=0;
+	cout <<endl << "\t";
+	for(auto a : attr_names){
+		cout <<" "<< a << "\t";
+	}
+	cout << endl;
+	for(auto u : table["U"]){
+		cout << u<<"\t";
+		for(auto a: attr_names){
+			if(biclaster.find(a)>=biclaster.size() and biclaster.find(to_string(u)) >= biclaster.size()){
+				cout <<"["<< table[a][u-1]<<"]\t";
+				++hits;
+			}else{
+				cout <<" "<< table[a][u-1]<<"\t";
+			}
+		}
+		cout << endl;
+	}
+
+	return hits;
+}
+void print_table(map<string, vector<int>> &table,vector<string> &attr_names){
+	cout <<endl<< "\t";
+	for(auto a : attr_names){
+		cout <<" "<< a << "\t";
+	}
+	cout << endl;
+	for(auto u : table["U"]){
+		cout << u<<"\t";
+		for(auto a: attr_names){
+				cout <<" "<< table[a][u-1]<<"\t";
+		}
+		cout << endl;
+	}
+}
+bool replace_biclaster(map<string, vector<int>> &table,vector<string> &attr_names, string biclaster, int value){
+	int hits = 0;
+	cout<<endl << "\t";
+	for(auto a : attr_names){
+		cout <<" "<< a << "\t";
+	}
+	cout << endl;
+	for(auto u : table["U"]){
+		cout << u<<"\t";
+		for(auto a: attr_names){
+			if(biclaster.find(a)>=biclaster.size() and biclaster.find(to_string(u)) >= biclaster.size()){
+				table[a][u-1] = value;
+				cout <<"["<< table[a][u-1]<<"]\t";
+				++hits;
+			}else{
+				cout <<" "<< table[a][u-1]<<"\t";
+			}
+		}
+		cout << endl;
+	}
+	return hits;
+}
 void get_clauses_biclaster(map<string, vector<int>> &table,vector<string> &attr_names, set<string>&clauses, int search_for = 0){
 	int* row_counters=new int[table["U"].size()];
 	int* col_counters=new int[attr_names.size()];
@@ -83,7 +141,7 @@ void get_clauses_biclaster(map<string, vector<int>> &table,vector<string> &attr_
 			cout << "wiersz "<<search_for<<" oznaczony "<<rowname<<endl;
 			auto cit = clauses.begin();
 			while(cit != clauses.end()){
-				cout << *cit<< " "<<cit->find(rowname)<<endl;
+				//cout << *cit<< " "<<cit->find(rowname)<<endl;
 				if(cit->find(rowname)<cit->size()){
 					clauses.erase(cit++);
 				}else{
@@ -99,7 +157,7 @@ void get_clauses_biclaster(map<string, vector<int>> &table,vector<string> &attr_
 			cout << "kolumna "<<search_for<<" oznaczona "<<colname<<endl;
 			auto cit = clauses.begin();
 			while(cit != clauses.end()){
-				cout << *cit<< " ";
+				//cout << *cit<< " ";
 				if(cit->find(colname)<cit->size()){
 
 					clauses.erase(cit++);
@@ -110,14 +168,8 @@ void get_clauses_biclaster(map<string, vector<int>> &table,vector<string> &attr_
 			clauses.insert(colname);
 		}
 	}
-
 	delete [] row_counters;
 	delete [] col_counters;
-
-
-
-
-
 }
 
 vector<vector<string>> get_matrix(map<string, vector<int>> &table,vector<string> &attr_names){
@@ -201,17 +253,20 @@ int main(){
 			table[attr_names[j]].push_back(value); 
 		}
 	}
-	for(auto x : table){
-		cout << x.first<<":\t";
-		for(auto y : x.second){
-			cout << y << " \t";
-		}
-		cout <<endl;
-	}
+	// for(auto x : table){
+	// 	cout << x.first<<":\t";
+	// 	for(auto y : x.second){
+	// 		cout << y << " \t";
+	// 	}
+	// 	cout <<endl;
+	// }
 	char decision;
+	string biclast;
 	bool  loop = true;
+	print_table(table, attr_names);
 	while(loop){
-		cout << "\nCo mam zrobić?\n1. macierz odróżnialności\n2. macierz odróżnialności modulo\n3. klauzule do biklastrów na tle 0\n4. klauzule do biklastów z wybrem tła\nq.  wyjście"<<endl;
+
+		cout << "\nCo mam zrobić?\n1. macierz odróżnialności\n2. macierz odróżnialności modulo\n3. klauzule do biklastrów na tle 0\n4. klauzule do biklastów z wybrem tła\n5. wypisz biklaster z klauzuli\n6. Wypełnij biklaster wartością\nq.  wyjście"<<endl;
 
 		cin >> decision;
 		switch(decision){
@@ -245,7 +300,6 @@ int main(){
 			break;
 		case '3':
 		{
-			if(objects!=attributes)cout << "WARN: Różna liczba kolumn i wierszy - macierz nie kwadratowa\nMożliwe, że robisz coś źle!"<<endl;
 			set<string> clauses;
 			get_clauses_biclaster(table, attr_names, clauses);
 			print_function(clauses);
@@ -253,7 +307,6 @@ int main(){
 		}break;
 		case '4':
 		{
-			if(objects!=attributes)cout << "WARN: Różna liczba kolumn i wierszy - macierz nie kwadratowa\nMożliwe, że robisz coś źle!"<<endl;
 			set<string> clauses;
 			int search_for;
 			cout << "Na tle czego mam szukać? ";
@@ -262,6 +315,34 @@ int main(){
 			get_clauses_biclaster(table, attr_names, clauses, search_for);
 			print_function(clauses);
 			print_clauses(clauses);
+		}break;
+		case '5':
+		{
+
+			cout << "Podaj klauzulę biklastra:( ! by anulować ) ";
+			getline(cin, biclast);
+			getline(cin, biclast);
+			//cin >> biclast;
+			if(biclast.find("!")<biclast.size()) break;
+			if(!print_biclaster(table, attr_names, biclast)){
+				cout << endl << "Klauzula koduje pusty biklaster"<<endl;
+			}
+		}break;
+		case '6':
+		{
+			string temp;
+			cout << "obecny biklaster ("<<biclast <<") wpisz nowy biklaser,\nlub  '-' by użyć obecnego\n( ! by anulować ) ";
+			getline(cin, temp);
+			getline(cin, temp);
+			if(temp.find("!")<temp.size()) break;
+			if(temp!="-")biclast=temp;
+			cout << "Podaj warstość którą mam wypełnić biklaster: ";
+			int value;
+			cin >> value;
+			if(!replace_biclaster(table, attr_names, biclast, value)){
+				cout << endl << "Klauzula koduje pusty biklaster"<<endl;
+			}
+
 		}break;
 		case 'q':
 			loop = false;
