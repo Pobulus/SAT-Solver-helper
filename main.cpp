@@ -81,12 +81,29 @@ bool print_biclaster(map<string, vector<int>> &table,vector<string> &attr_names,
 void print_table(map<string, vector<int>> &table,vector<string> &attr_names){
 	cout <<endl<< "\t";
 	for(auto a : attr_names){
+
 		cout <<" "<< a << "\t";
 	}
 	cout << endl;
 	for(auto u : table["U"]){
 		cout << u<<"\t";
 		for(auto a: attr_names){
+				cout <<" "<< table[a][u-1]<<"\t";
+		}
+		cout << endl;
+	}
+}
+void print_table_reduct(map<string, vector<int>> &table,vector<string> &attr_names, string reduct, bool dt){
+	cout <<endl<< "\t";
+	for(auto a : attr_names){
+		if(reduct.find(a)<reduct.size() or (dt and a==attr_names[attr_names.size()-1]))
+			cout <<" "<< a << "\t";
+	}
+	cout << endl;
+	for(auto u : table["U"]){
+		cout << u<<"\t";
+		for(auto a: attr_names){
+			if(reduct.find(a)<reduct.size() or (dt and a==attr_names[attr_names.size()-1]))
 				cout <<" "<< table[a][u-1]<<"\t";
 		}
 		cout << endl;
@@ -266,7 +283,7 @@ int main(){
 	print_table(table, attr_names);
 	while(loop){
 
-		cout << "\nCo mam zrobić?\n1. macierz odróżnialności\n2. macierz odróżnialności modulo\n3. klauzule do biklastrów na tle 0\n4. klauzule do biklastów z wybrem tła\n5. wypisz biklaster z klauzuli\n6. Wypełnij biklaster wartością\nq.  wyjście"<<endl;
+		cout << "\nCo mam zrobić?\n1. macierz odróżnialności\n2. macierz odróżnialności modulo\n3. klauzule do biklastrów na tle 0\n4. klauzule do biklastów z wybrem tła\n5. wypisz biklaster z klauzuli\n6. wypełnij biklaster wartością\n7. redukt tablicy\n8. redukt tablicy decyzyjnej\nq.  wyjście"<<endl;
 
 		cin >> decision;
 		switch(decision){
@@ -342,6 +359,26 @@ int main(){
 			if(!replace_biclaster(table, attr_names, biclast, value)){
 				cout << endl << "Klauzula koduje pusty biklaster"<<endl;
 			}
+
+		}break;
+		case '7':
+		{
+			string reduct;
+			cout << "Podaj redukt jaki mam wykonać ";
+			getline(cin, reduct);
+			getline(cin, reduct);
+			print_table_reduct(table, attr_names, reduct, 0);
+
+
+		}break;
+		case '8':
+		{
+			string reduct;
+			cout << "Podaj redukt jaki mam wykonać ";
+			getline(cin, reduct);
+			getline(cin, reduct);
+			print_table_reduct(table, attr_names, reduct, 1);
+
 
 		}break;
 		case 'q':
